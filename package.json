@@ -3,13 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "index": "node index.js",
-    "process-argv":"clear && node exercicios/process-argv.js",
-    "par-ou-impar":"clear && node exercicios/par-ou-impar.js"
-
+    "index": "tsc && node ./build/index.js"
   },
   "repository": {
     "type": "git",
@@ -21,5 +17,9 @@
   "bugs": {
     "url": "https://github.com/karinadarc/labecommerce-backend/issues"
   },
-  "homepage": "https://github.com/karinadarc/labecommerce-backend#readme"
+  "homepage": "https://github.com/karinadarc/labecommerce-backend#readme",
+  "devDependencies": {
+    "@types/node": "^20.5.7",
+    "typescript": "^5.2.2"
+  }
 }
