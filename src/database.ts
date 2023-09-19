@@ -19,9 +19,9 @@ export const users: TUser[] = [
 
 //timestamp tem haver com data
 
-export const produtos: TProduct[] = [
+export const products: TProduct[] = [
     {
-        id: 'tv001',
+        id: 'p001',
         name: 'Tv Samsung',
         price: 2000.00,
         description: 'Monitor Led Full HD 24 polegadas',
@@ -29,7 +29,7 @@ export const produtos: TProduct[] = [
 
     },
     {
-        id: 'pc001',
+        id: 'p002',
         name: 'Notbook Samsung',
         price: 1500.00,
         description: 'Notbook - 8gb memória ',
@@ -39,7 +39,7 @@ export const produtos: TProduct[] = [
 
 ]
 
-//---------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------
 export const createUser = (id: string, name: string, email: string, password: string): string => {
     const createdAt = new Date().toISOString()
     const newUser: TUser = { id, name, email, password, createdAt }
@@ -53,14 +53,14 @@ export const getAllUsers = (): TUser[] => users;
 
 export function createProduct(id: string, name: string, price: number, description: string, imageUrl: string): string {
     const newProduct: TProduct = { id, name, price, description, imageUrl }
-    produtos.push(newProduct)
+    products.push(newProduct)
     return "Produto criado com sucesso"
 }
 export function getAllProducts(): TProduct[] {
-    return produtos
+    return products
 } 
 
-//----------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------
 
 export function searchUserByName(users: TUser[], nameInformado: string): TUser[] {
     const nomeLowerCase = nameInformado.toLowerCase()
@@ -76,7 +76,7 @@ export function searchProductsByName(produtos: TProduct[], nameInformado: string
 }
 
 
-//-----------------------------------------------------------------------------------------------
+//------------------------------------------------
 
 export const createUserResult = createUser("u003", "Barbie", "babii@email.com", "hellobarbie");
 console.table(createUserResult)
