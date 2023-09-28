@@ -157,7 +157,7 @@ app.post('/users', (req: Request, res: Response): void => {
 
         }
         users.push(newUser)
-        res.status(201).send('Usúario cadastrado com sucesso')
+        res.status(201).send('Usuário cadastrado com sucesso')
     } catch (error) {
         console.log(error)
         if (error instanceof Error) {
