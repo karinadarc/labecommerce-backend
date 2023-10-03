@@ -24,13 +24,20 @@ DELETE FROM users WHERE id='';
 --Atualiza informações
  
 INSERT INTO users(id,name,email,password)
-VALUES('u001', 'Yasmin', 'yas@gmail.com','010101')
+VALUES('u001', 'Yasmin', 'yas@gmail.com','010101');
 
 INSERT INTO users(id,name,email,password)
 VALUES('u002', 'Giovana', 'gio@gmail.com','020202'),
 ('u003', 'Heloisa', 'helo@gmail.com','030303'),
-('u004', 'Isabela', 'isa@gmail.com','040404')
+('u004', 'Isabela', 'isa@gmail.com','040404');
 
+
+SELECT name FROM users;
+
+INSERT INTO users(id,name,email,password)
+VALUES('u005', 'Camilly', 'camil@gmail.com','050505');
+
+DELETE FROM users WHERE id='u005';
 ------------------------------------------------------------------------------
 --                 TABELA DE PRODUTOS
 
@@ -65,7 +72,29 @@ INSERT INTO products(id,name,price,description,image_url)
 VALUES('p002', 'Iphone 13', 4299.00,'128bg','https://images.unsplash.com/photo-1512054502232-10a0a035d672?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1780&q=80'),
 ('p003', 'Geladeira', 1999.99,'Frost Free','https://images.pexels.com/photos/13077721/pexels-photo-13077721.jpeg?auto=compress&cs=tinysrgb&w=600'),
 ('p004', 'Fogão', 1850.00,'Seis bocas, Ferro fundido','https://images.unsplash.com/photo-1609211373254-b52e03ba0c85?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1888&q=80'),
-('p005', 'Mesa', 5699.00,'Mesa para escritório, com seis lugares','https://images.unsplash.com/photo-1615066390971-03e4e1c36ddf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2004&q=80')
+('p005', 'Mesa', 5699.00,'Mesa para escritório, com seis lugares','https://images.unsplash.com/photo-1615066390971-03e4e1c36ddf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2004&q=80');
+
+
+SELECT * FROM products;
+
+SELECT name FROM products;
+SELECT name FROM products WHERE name LIKE 'geladeira%' ;
+
+INSERT INTO products(id,name,price,description,image_url)
+VALUES('p006', 'Fone de ouvido JBL',400.00,'Fone Bluetooth ','hhttps://images.pexels.com/photos/8000624/pexels-photo-8000624.jpeg');
+
+DELETE FROM products WHERE id='p008';
+
+UPDATE products
+SET 
+    id='p008',
+    name='Xbox',
+    price= 4999.99,
+    description='Series x',
+    image_url='hhttps://images.pexels.com/photos/8000624/pexels-photo-8000624.jpeg'
+WHERE id='p001';
+
+
 
 
 
