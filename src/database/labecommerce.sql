@@ -95,10 +95,49 @@ SET
 WHERE id='p001';
 
 
+--------------- TABELA PURCHASES ------------------
+--criando a tabela
+CREATE TABLE purchases(
+    id TEXT PRIMARY KEY UNIQUE NOT NULL,
+    buyer TEXT NOT NULL,
+    total_price REAL NOT NULL,
+    created_at TEXT NOT NULL,
+    FOREIGN KEY (buyer) REFERENCES users(id)
+);
+
+DROP TABLE purchases;
+
+--populando a tabela
+INSERT INTO purchases
+VALUES ('pur001', 'u001', 79.50,DATETIME());
 
 
+INSERT INTO purchases
+VALUES ('pur002', 'u002', 99.00,DATETIME()),('pur003', 'u003', 49.99,DATETIME()),('pur004', 'u004', 136.99,DATETIME()),('pur005', 'u005', 19.50,DATETIME());
+
+SELECT * FROM purchases;
+
+--editando a tabela
+UPDATE purchases
+SET 
+    total_price= 199.99
+WHERE id='pur005';
+
+UPDATE purchases
+SET 
+    total_price= total_price -50
+WHERE id='pur001';
 
 
+SELECT 
+purchases.id AS idCompra,
+users.id AS idUser, 
+users.name AS Nome, 
+users.email, 
+purchases.total_price AS precoTotal, 
+purchases.created_at AS data 
+FROM purchases
+INNER JOIN users ON purchases.buyer = users.id;
 
 
 
