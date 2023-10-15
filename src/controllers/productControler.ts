@@ -1,17 +1,19 @@
 import { Request, Response } from 'express'
 import { TProduct } from "../types";
 import { products } from "../database"
+import { addProduct, getAllProducts, getProduct, getProductsbyName, removeProduct, saveProduct } from '../models/productModel';
 
 export const getProducts = (req: Request, res: Response) => {
-    const q: string = req.query.q as string
-    const resultProducts: TProduct[] = products
+    const name: string = req.query.name as string
 
-    if (q !== undefined && q.length < 1) {
+    if (name !== undefined && name.length < 1) {
         return res.status(400).send('O campo de pesquisa deve possuir pelo menos um caractere')
-    } if (!q) {
-        return res.status(200).send(resultProducts)
+    }
+    if (!name) {
+        const allProducts = getAllProducts()
+        return res.status(200).send(allProducts)
     } else {
-        const searchProducts: TProduct[] = products.filter(product => product.name.toLowerCase().includes(q.toLowerCase()))
+        const searchProducts: TProduct[] = getProductsbyName(name)
         return res.status(200).send(searchProducts)
     }
 };
@@ -25,7 +27,7 @@ export const createProduct = (req: Request, res: Response) => {
             throw new Error('O ID deve ser uma string e iniciar com "p00"')
 
         }
-        if (products.some(product => product.id === id)) {
+        if (getProduct(id)) {
             res.status(409).send('Este ID já está em uso. Escolha um ID único.');
         }
         if (typeof name !== "string") {
@@ -51,7 +53,7 @@ export const createProduct = (req: Request, res: Response) => {
             description,
             imageUrl
         }
-        products.push(newProduct)
+        addProduct(newProduct)
         res.status(201).send('Produto cadastrado com sucesso')
     } catch (error) {
         console.log(error)
@@ -64,11 +66,10 @@ export const createProduct = (req: Request, res: Response) => {
 
 export const deleteProduct = (req: Request, res: Response): void => {
     const id: string = req.params.id
-    const indexToDelete = products.findIndex((product) => product.id === id)
-    let msnDelete = `O produto ${id} foi deletado`
+    let msnDelete = ``
 
-    if (indexToDelete !== -1) {
-        products.splice(indexToDelete, 1)
+    if (removeProduct(id)) {
+        msnDelete = `O produto ${id} foi deletado`
     } else {
         msnDelete = `O produto ${id} não existe!`
     }
@@ -83,7 +84,7 @@ export const updateProduct = (req: Request, res: Response) => {
     const newDescription = req.body.description as string | undefined
     const newImageURL = req.body.imageUrl as string | undefined
 
-    const product = products.find((product) => product.id === id)
+    const product = getProduct(id)
 
     if (!product) {
         return res.status(404).send({ message: "Produto não encontrado" });
@@ -101,6 +102,8 @@ export const updateProduct = (req: Request, res: Response) => {
     if (newImageURL !== undefined) {
         product.imageUrl = newImageURL;
     }
+
+    saveProduct(product)
 
     res.status(200).send({ message: "O produto foi alterado com sucesso" })
 
