@@ -215,7 +215,7 @@ app.post('/products', (req: Request, res: Response) => {
 }
 )
 
-// aprodundamento express
+// aprodundamento express - deletar a compra
 // deleteUserById
 app.delete("/users/:id", (req: Request, res: Response): void => {
     const id: string = req.params.id
