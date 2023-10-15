@@ -8,6 +8,37 @@ CREATE TABLE users(
     created_at TEXT DEFAULT(DATETIME()) NOT NULL
 );
 
+
+CREATE TABLE products(
+    id TEXT PRIMARY KEY UNIQUE NOT NULL,
+    name TEXT NOT NULL,
+    price REAL NOT NULL,
+    description TEXT NOT NULL,
+    image_url TEXT NOT NULL
+);
+
+
+CREATE TABLE purchases(
+    id TEXT PRIMARY KEY UNIQUE NOT NULL,
+    buyer TEXT NOT NULL,
+    total_price REAL NOT NULL,
+    created_at TEXT NOT NULL,
+    FOREIGN KEY (buyer) REFERENCES users(id)
+    ON UPDATE CASCADE -- efeito cascata ao atualizar id na tabela users
+	ON DELETE CASCADE -- efeito cascata ao atualizar id na tabela users
+);
+
+
+CREATE TABLE purchases_products(
+        purchase_id TEXT NOT NULL,
+        product_id TEXT NOT NULL,
+        quantity INTEGER NOT NULL,
+        FOREIGN KEY(purchase_id) REFERENCES purchases(id),
+        FOREIGN KEY(product_id) REFERENCES products(id)
+        ON UPDATE CASCADE -- efeito cascata ao atualizar id na tabela users
+		ON DELETE CASCADE -- efeito cascata ao atualizar id na tabela users
+);
+
 SELECT * FROM users;
 --Seleciona toda a tabela
 
@@ -42,13 +73,6 @@ DELETE FROM users WHERE id='u005';
 --                 TABELA DE PRODUTOS
 
 
-CREATE TABLE products(
-    id TEXT PRIMARY KEY UNIQUE NOT NULL,
-    name TEXT NOT NULL,
-    price REAL NOT NULL,
-    description TEXT NOT NULL,
-    image_url TEXT NOT NULL
-);
 
 SELECT * FROM products;
 --Seleciona toda a tabela
@@ -97,15 +121,7 @@ WHERE id='p001';
 
 --------------- TABELA PURCHASES ------------------
 --criando a tabela
-CREATE TABLE purchases(
-    id TEXT PRIMARY KEY UNIQUE NOT NULL,
-    buyer TEXT NOT NULL,
-    total_price REAL NOT NULL,
-    created_at TEXT NOT NULL,
-    FOREIGN KEY (buyer) REFERENCES users(id)
-    ON UPDATE CASCADE -- efeito cascata ao atualizar id na tabela users
-	ON DELETE CASCADE -- efeito cascata ao atualizar id na tabela users
-);
+
 
 
 DROP TABLE purchases;
@@ -145,15 +161,7 @@ INNER JOIN users ON purchases.buyer = users.id;
 
 --------------------------PURCHASES_PRODUCTS---------------------------------------
 
-CREATE TABLE purchases_products(
-        purchase_id TEXT NOT NULL,
-        product_id TEXT NOT NULL,
-        quantity INTEGER NOT NULL,
-        FOREIGN KEY(purchase_id) REFERENCES purchases(id),
-        FOREIGN KEY(product_id) REFERENCES products(id)
-        ON UPDATE CASCADE -- efeito cascata ao atualizar id na tabela users
-		ON DELETE CASCADE -- efeito cascata ao atualizar id na tabela users
-);
+
 
 DROP TABLE purchases_products;
 INSERT INTO
