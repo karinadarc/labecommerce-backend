@@ -1,17 +1,25 @@
 import { TUser } from "../types";
 import { users } from "../database"
+import { db } from "../database/knex";
 
 
-export const getUsers = (): TUser[] => {
-    return users
+export const getUsers = async (): Promise<TUser[]> => {
+    const result = await db.raw(`SELECT * FROM users`)
+    return result
 };
 
-export const getUser = (id: string): TUser | undefined => {
-    return users.find((user) => user.id === id)
+export const getUser = async (id: string): Promise<TUser | undefined> => {
+    const [queryIdUser] = await db.raw(`SELECT id FROM users WHERE id ="${id}"`) 
+    return queryIdUser
 };
 
-export const addUser = (newUser: TUser): void => {
-    users.push(newUser)
+export const addUser = async (newUser: TUser): Promise<void> => {
+    const result = await db.raw(`INSERT INTO users (id, name, email, password)
+    VALUES('${newUser.id}',
+        '${newUser.name}',
+        '${newUser.email}',
+        '${newUser.password}'
+    )`)
 };
 
 export const removeUser = (id: string): boolean => {

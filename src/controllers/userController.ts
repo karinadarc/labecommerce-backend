@@ -3,9 +3,9 @@ import { TUser } from "../types";
 import { addUser, getUser, getUsers, removeUser } from '../models/userModel';
 
 
-export const getAllUsers = (req: Request, res: Response): void => {
+export const getAllUsers = async (req: Request, res: Response): Promise<void> => {
     try {
-        const resultUsers: TUser[] = getUsers()
+        const resultUsers: TUser[] = await getUsers()
         if (!resultUsers) {
             res.statusCode = 404
             throw new Error('Usuários não encontrados!')
@@ -22,7 +22,7 @@ export const getAllUsers = (req: Request, res: Response): void => {
 };
 
 
-export const createUser = (req: Request, res: Response): void => {
+export const createUser = async (req: Request, res: Response): Promise<void> => {
     console.log(req.body)
     try {
         const { id, name, email, password }: TUser = req.body
@@ -30,19 +30,21 @@ export const createUser = (req: Request, res: Response): void => {
             res.statusCode = 400
             throw new Error('O ID deve ser uma string e iniciar com "u00"')
         }
-        if (getUser(id)) {
-            res.status(400).send('ID já em uso')
+        if (await getUser(id)) {
+            res.statusCode = 409
+            throw new Error('ID já em uso')
+          
         }
         if (typeof name !== "string") {
-            res.statusCode = 400
+            res.statusCode = 409
             throw new Error('O name precisa ser uma string')
         }
         if (typeof email !== "string") {
-            res.statusCode = 400
+            res.statusCode = 409
             throw new Error('O e-mail precisa ser uma string')
         }
         if (typeof password !== "string" || password.length < 5) {
-            res.statusCode = 400
+            res.statusCode = 409
             throw new Error('A senha precisa ser uma string e ter no mínimo 5 caracteres')
         }
 
@@ -57,7 +59,7 @@ export const createUser = (req: Request, res: Response): void => {
         addUser(newUser)
         res.status(201).send('Usuário cadastrado com sucesso')
     } catch (error) {
-        console.log(error)
+       // console.log(error)
         if (error instanceof Error) {
             res.send(error.message)
         }

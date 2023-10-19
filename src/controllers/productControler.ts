@@ -3,23 +3,23 @@ import { TProduct } from "../types";
 import { products } from "../database"
 import { addProduct, getAllProducts, getProduct, getProductsbyName, removeProduct, saveProduct } from '../models/productModel';
 
-export const getProducts = (req: Request, res: Response) => {
+export const getProducts = async (req: Request, res: Response) => {
     const name: string = req.query.name as string
 
     if (name !== undefined && name.length < 1) {
         return res.status(400).send('O campo de pesquisa deve possuir pelo menos um caractere')
     }
     if (!name) {
-        const allProducts = getAllProducts()
+        const allProducts = await getAllProducts()
         return res.status(200).send(allProducts)
     } else {
-        const searchProducts: TProduct[] = getProductsbyName(name)
+        const searchProducts: TProduct[] = await getProductsbyName(name)
         return res.status(200).send(searchProducts)
     }
 };
 
 
-export const createProduct = (req: Request, res: Response) => {
+export const createProduct = async (req: Request, res: Response) => {
     try {
         const { id, name, price, description, imageUrl }: TProduct = req.body
         if (typeof id !== "string" || !id.startsWith('p00')) {
@@ -27,8 +27,9 @@ export const createProduct = (req: Request, res: Response) => {
             throw new Error('O ID deve ser uma string e iniciar com "p00"')
 
         }
-        if (getProduct(id)) {
-            res.status(409).send('Este ID já está em uso. Escolha um ID único.');
+        if (await getProduct(id)) {
+            res.statusCode = 409
+            throw new Error('Este ID já está em uso. Escolha um ID único.');
         }
         if (typeof name !== "string") {
             res.statusCode = 404
@@ -53,10 +54,10 @@ export const createProduct = (req: Request, res: Response) => {
             description,
             imageUrl
         }
-        addProduct(newProduct)
+        await addProduct(newProduct)
         res.status(201).send('Produto cadastrado com sucesso')
     } catch (error) {
-        console.log(error)
+        //console.log(error)
         if (error instanceof Error) {
             res.send(error.message)
         }
@@ -64,11 +65,11 @@ export const createProduct = (req: Request, res: Response) => {
 
 };
 
-export const deleteProduct = (req: Request, res: Response): void => {
+export const deleteProduct = async (req: Request, res: Response): Promise<void> => {
     const id: string = req.params.id
     let msnDelete = ``
 
-    if (removeProduct(id)) {
+    if (await removeProduct(id)) {
         msnDelete = `O produto ${id} foi deletado`
     } else {
         msnDelete = `O produto ${id} não existe!`
@@ -77,19 +78,25 @@ export const deleteProduct = (req: Request, res: Response): void => {
 };
 
 
-export const updateProduct = (req: Request, res: Response) => {
+export const updateProduct = async (req: Request, res: Response) => {
     const id: string = req.params.id
+    const newId = req.body.id as string | undefined
     const newName = req.body.name as string | undefined
     const newPrice = req.body.price as number | undefined
     const newDescription = req.body.description as string | undefined
     const newImageURL = req.body.imageUrl as string | undefined
 
-    const product = getProduct(id)
+    const product = await getProduct(id)
 
     if (!product) {
         return res.status(404).send({ message: "Produto não encontrado" });
     }
-
+    if (newId !== undefined) {
+        if(await getProduct(newId)){
+        return res.status(404).send({ message: `O '${newId} já está em uso!'` });  
+        }
+        product.id = newId;
+    }
     if (newName !== undefined) {
         product.name = newName;
     }
@@ -103,7 +110,7 @@ export const updateProduct = (req: Request, res: Response) => {
         product.imageUrl = newImageURL;
     }
 
-    saveProduct(product)
+     await saveProduct(product, id)
 
     res.status(200).send({ message: "O produto foi alterado com sucesso" })
 
