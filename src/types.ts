@@ -26,3 +26,17 @@ export type TPurchases_products = {
     product_id: string,
     quantity: number
 }
+
+export type TProductsInPurchases = {
+    quantity: number
+} & TProduct
+
+export type TPurchaseById = {
+    purchaseId: string,
+    buyerId: string,
+    buyerName: string,
+    buyerEmail: string,
+    totalPrice: number,
+    createdAt?: string,
+    products: TProductsInPurchases[]
+}

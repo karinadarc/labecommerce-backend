@@ -14,7 +14,7 @@ CREATE TABLE products(
     name TEXT NOT NULL,
     price REAL NOT NULL,
     description TEXT NOT NULL,
-    imageUrl TEXT NOT NULL
+    image_url TEXT NOT NULL
 );
 
 
@@ -82,7 +82,7 @@ SELECT * FROM products;
 PRAGMA table_info(products);
 --Informações da tabela
 
-DROP TABLE purchases_products;
+DROP TABLE products;
 --Deleta a tabela inteira
 
 DELETE FROM products WHERE id='';
@@ -146,19 +146,21 @@ WHERE id='pur005';
 
 UPDATE purchases
 SET 
-    total_price= total_price -50
+    total_price= total_price -10
 WHERE id='pur001';
 
 
 SELECT 
-purchases.id AS idCompra,
-users.id AS idUser, 
-users.name AS Nome, 
-users.email, 
-purchases.total_price AS precoTotal, 
-purchases.created_at AS data 
-FROM purchases
-INNER JOIN users ON purchases.buyer = users.id;
+products.id AS id,
+products.name AS name, 
+products.price AS price, 
+products.description AS description,
+products.image_url AS imageUrl, 
+purchases_products.quantity AS quantity
+FROM products
+INNER JOIN purchases_products ON purchases_products.product_id = products.id WHERE purchase_id='pur002';
+
+
 
 
 --------------------------PURCHASES_PRODUCTS---------------------------------------
