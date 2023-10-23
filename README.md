@@ -46,24 +46,29 @@
 
 ## :dart: Sobre ##
 
-Sobre o seu projeto
+O projeto Labecommerce backend é uma aplicação web de e-commerce.O objetivo foi criar uma API, capaz de realizar consultas, criar, editar e deletar dados.   
+
+LINK DA DOCUMENTAÇÃO: https://documenter.getpostman.com/view/28315573/2s9YRCXrKa
 
 ## :sparkles: Funcionalidades ##
 
-:heavy_check_mark: Funcionalidade 1;\
-:heavy_check_mark: Funcionalidade 2;\
-:heavy_check_mark: Funcionalidade 3;
+- Cadastro/consulta/remoção de usuário
+- Cadastro/consulta/edição/remoção de produtos
+- Cadastro/consulta/remoção de pedido
 
 ## :rocket: Tecnologias ##
 
 As seguintes ferramentas foram usadas na construção do projeto:
 
-- [Expo](https://expo.io/)
-- [Node.js](https://nodejs.org/en/)
-- [React](https://pt-br.reactjs.org/)
-- [React Native](https://reactnative.dev/)
-- [TypeScript](https://www.typescriptlang.org/)
+- Knex
+- Node.js
+- Express
+- SQLite3
+- TypeScript
 
+
+## :Documentação da API ##
+Link: https://documenter.getpostman.com/view/28315573/2s9YRCXrKa
 ## :white_check_mark: Pré requisitos ##
 
 Antes de começar :checkered_flag:, você precisa ter o [Git](https://git-scm.com) e o [Node](https://nodejs.org/en/) instalados em sua maquina.
@@ -78,12 +83,12 @@ $ git clone https://github.com/karinadarc/labecommerce-backend
 $ cd labecommerce-backend
 
 # Instale as dependências
-$ yarn
+$ npm install
 
 # Para iniciar o projeto
-$ yarn start
+$ npm run dev
 
-# O app vai inicializar em <http://localhost:3000>
+# O app vai inicializar em <http://localhost:3003>
 ```
 
 ## :memo: Licença ##
