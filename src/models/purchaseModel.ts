@@ -1,31 +1,11 @@
 import { db } from "../database/knex";
-import { TPurchase, TPurchases_products } from "../types";
+import { TProductsInPurchases, TPurchase, TPurchaseById, TPurchases_products } from "../types";
 
 
 export const addPurchase = async (newPurchase: TPurchase, products: TPurchases_products[]): Promise<void> => {
-    const result = await db.raw(`INSERT INTO purchases (id, buyer, total_price)
-    VALUES('${newPurchase.id}',
-        '${newPurchase.buyer}',
-        '${newPurchase.total_price}'
-    )`)
-
-    //await db.insert(newPurchase).into('purchases')
-
-    // if (products) {
-    //     let insertProducts = `INSERT INTO purchases_products
-    //     (purchase_id, product_id, quantity) VALUES `;
-    //     let values: string[] = [];
-    
-    //     products.forEach(async (product) => {
-    //         values.push(`('${product.purchase_id}', '${product.product_id}', ${product.quantity})`) 
-    //     }) 
-
-    //     insertProducts += values.join();
-    //     await db.raw(insertProducts);
-    // }
-    
-
+    await db.insert(newPurchase).into('purchases')
     await db.batchInsert('purchases_products', products);
+    //                     tabela               valor
 };
 
 export const getPurchase = async (id:string): Promise<TPurchase | undefined> =>{
@@ -34,7 +14,37 @@ export const getPurchase = async (id:string): Promise<TPurchase | undefined> =>{
 };
 
 export const removePurchase = async (id: string) => {
-    const result = await db.raw(`DELETE FROM purchases WHERE id='${id}'`)
-  
-      return result
+    await db.delete().from("purchases").where({ id:id})
   };
+
+export const getCompletePurchase = async (id:string): Promise<TPurchaseById | undefined> =>{
+    const [result]  = await db.select(
+        'purchases.id as purchaseId', 
+        'users.id as buyerId', 
+        'users.name as buyerName', 
+        'users.email as buyerEmail', 
+        'purchases.total_price as totalPrice', 
+        'purchases.created_at as createdAt')
+        .from('purchases')
+        .join('users','users.id','purchases.buyer')
+        .where('purchases.id',id) as TPurchaseById[]
+
+    if(result){
+        const products = await db.select(
+            'products.id as id',
+            'products.name as name',
+            'products.price as price',
+            'products.description as description',
+            'products.image_url as imageUrl',
+            'purchases_products.quantity as quantity')
+            .from('products')
+            .join('purchases_products', 'purchases_products.product_id','products.id')
+            .where('purchase_id',id) as TProductsInPurchases[]
+    
+        result.products = products
+    }
+
+    
+
+    return result
+}

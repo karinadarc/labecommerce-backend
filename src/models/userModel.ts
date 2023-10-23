@@ -1,34 +1,41 @@
 import { TUser } from "../types";
-import { users } from "../database"
 import { db } from "../database/knex";
 
 
 export const getUsers = async (): Promise<TUser[]> => {
-    const result = await db.raw(`SELECT * FROM users`)
+    const result = await db.select(
+        'id as id',
+        'name as name',
+        'email as email',
+        'password as password',
+        'created_at as createdAt'
+    ).from('users').orderBy('created_at', 'asc')
     return result
 };
 
 export const getUser = async (id: string): Promise<TUser | undefined> => {
-    const [queryIdUser] = await db.raw(`SELECT id FROM users WHERE id ="${id}"`) 
-    return queryIdUser
+    // const [queryIdUser] = await db.raw(`SELECT id FROM users WHERE id ="${id}"`) 
+    // return queryIdUser
+
+    const [ user ] = await db.select("*").from("users").where({ id:id })
+    return user
 };
 
 export const addUser = async (newUser: TUser): Promise<void> => {
-    const result = await db.raw(`INSERT INTO users (id, name, email, password)
-    VALUES('${newUser.id}',
-        '${newUser.name}',
-        '${newUser.email}',
-        '${newUser.password}'
-    )`)
+    // const result = await db.raw(`INSERT INTO users (id, name, email, password)
+    // VALUES('${newUser.id}',
+    //     '${newUser.name}',
+    //     '${newUser.email}',
+    //     '${newUser.password}'
+    // )`)
+
+    await db("users").insert(newUser)
 };
 
-export const removeUser = (id: string): boolean => {
-    const indexToDelete = users.findIndex((user) => user.id === id)
-    if (indexToDelete !== -1) {
-        users.splice(indexToDelete, 1)
-        return true
-    }
-    return false
+export const removeUser = async (id: string):Promise<void>  => {
+   // await db.raw(`DELETE FROM users WHERE id='${id}'`)
+
+   await db.delete().from("users").where({ id:id})
 }
 
 

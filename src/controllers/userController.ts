@@ -28,12 +28,12 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
         const { id, name, email, password }: TUser = req.body
         if (typeof id !== "string" || !id.startsWith('u00')) {
             res.statusCode = 400
-            throw new Error('O ID deve ser uma string e iniciar com "u00"')
+            throw new Error('O ID deve ser uma string e iniciar com u00')
         }
         if (await getUser(id)) {
             res.statusCode = 409
             throw new Error('ID já em uso')
-          
+
         }
         if (typeof name !== "string") {
             res.statusCode = 409
@@ -52,16 +52,15 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
             id,
             name,
             email,
-            password,
-            createdAt: new Date().toLocaleString()
+            password
         }
 
         addUser(newUser)
-        res.status(201).send('Usuário cadastrado com sucesso')
+        res.status(201).send({ message:'Cadastro realizado com sucesso'})
     } catch (error) {
-       // console.log(error)
+        // console.log(error)
         if (error instanceof Error) {
-            res.send(error.message)
+            res.send({message: error.message})
         }
     }
 
@@ -69,13 +68,24 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
 };
 
 
-export const deleteUser = (req: Request, res: Response): void => {
+export const deleteUser = async (req: Request, res: Response) => {
     const id: string = req.params.id
 
-    if (removeUser(id)) {
-        res.status(200).send({ message: `O usuario ${id} foi deletado` })
-    } else {
-        res.status(200).send({ message: `O usuário ${id} não existe!` })
+    try {
+        if (await getUser(id)) {
+            await removeUser(id)
+            return res.status(200).send({ message: `O usuario ${id} foi deletado` })
+        } 
+        return res.status(404).send({ message: `O usuário ${id} não existe!` })
+    } catch (error) {
+        if (error instanceof Error) {
+            res.send({message: error.message})
+        } else {
+            res.send({message:'Erro inesperado!'});
+        }
     }
+
+    
+
 }
 

@@ -14,7 +14,7 @@ CREATE TABLE products(
     name TEXT NOT NULL,
     price REAL NOT NULL,
     description TEXT NOT NULL,
-    imageUrl TEXT NOT NULL
+    image_url TEXT NOT NULL
 );
 
 
@@ -82,13 +82,13 @@ SELECT * FROM products;
 PRAGMA table_info(products);
 --Informações da tabela
 
-DROP TABLE purchases_products;
+DROP TABLE products;
 --Deleta a tabela inteira
 
 DELETE FROM products WHERE id='';
 --Deleta as informações da tabela
 
- UPDATE products SET image_url='https://plus.unsplash.com/premium_photo-1682125724182-1eadf9d1360d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1928&q=80' WHERE id='p002';
+ UPDATE products SET image_url='https://picsum.photos/id/237/200/300' WHERE id='p005';
 --Atualiza informações
  
 INSERT INTO products(id,name,price,description,image_url)
@@ -107,18 +107,18 @@ SELECT name FROM products;
 SELECT name FROM products WHERE name LIKE 'geladeira%' ;
 
 INSERT INTO products(id,name,price,description,image_url)
-VALUES('p006', 'Fone de ouvido JBL',400.00,'Fone Bluetooth ','hhttps://images.pexels.com/photos/8000624/pexels-photo-8000624.jpeg');
+VALUES('p006', 'Fone de ouvido JBL',400.00,'Fone Bluetooth ','https://picsum.photos/id/237/200/300');
 
-DELETE FROM products WHERE id='p008';
+DELETE FROM products WHERE id='p006';
 
 UPDATE products
 SET 
-    id='p008',
-    name='Xbox',
-    price= 4999.99,
-    description='Series x',
-    image_url='hhttps://images.pexels.com/photos/8000624/pexels-photo-8000624.jpeg'
-WHERE id='p001';
+    id='p004',
+    name='Fogão',
+    price= 1850.0,
+    description='Fogão de seis bocas',
+    image_url='https://picsum.photos/id/237/200/300'
+WHERE id='p004';
 
 
 --------------- TABELA PURCHASES ------------------
@@ -146,19 +146,21 @@ WHERE id='pur005';
 
 UPDATE purchases
 SET 
-    total_price= total_price -50
+    total_price= total_price -10
 WHERE id='pur001';
 
 
 SELECT 
-purchases.id AS idCompra,
-users.id AS idUser, 
-users.name AS Nome, 
-users.email, 
-purchases.total_price AS precoTotal, 
-purchases.created_at AS data 
-FROM purchases
-INNER JOIN users ON purchases.buyer = users.id;
+products.id AS id,
+products.name AS name, 
+products.price AS price, 
+products.description AS description,
+products.image_url AS imageUrl, 
+purchases_products.quantity AS quantity
+FROM products
+INNER JOIN purchases_products ON purchases_products.product_id = products.id WHERE purchase_id='pur002';
+
+
 
 
 --------------------------PURCHASES_PRODUCTS---------------------------------------

@@ -3,7 +3,7 @@ export type TUser = {
     name: string,
     email: string,
     password: string,
-    createdAt: string,
+    createdAt?: string,
 }
 
 export type TProduct = {
@@ -25,4 +25,18 @@ export type TPurchases_products = {
     purchase_id: string,
     product_id: string,
     quantity: number
+}
+
+export type TProductsInPurchases = {
+    quantity: number
+} & TProduct
+
+export type TPurchaseById = {
+    purchaseId: string,
+    buyerId: string,
+    buyerName: string,
+    buyerEmail: string,
+    totalPrice: number,
+    createdAt?: string,
+    products: TProductsInPurchases[]
 }
