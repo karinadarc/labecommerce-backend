@@ -3,7 +3,13 @@ import { db } from "../database/knex";
 
 
 export const getUsers = async (): Promise<TUser[]> => {
-    const [result] = await db("users")
+    const result = await db.select(
+        'id as id',
+        'name as name',
+        'email as email',
+        'password as password',
+        'created_at as createdAt'
+    ).from('users').orderBy('created_at', 'asc')
     return result
 };
 

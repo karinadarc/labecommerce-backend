@@ -29,18 +29,22 @@ export const getCompletePurchase = async (id:string): Promise<TPurchaseById | un
         .join('users','users.id','purchases.buyer')
         .where('purchases.id',id) as TPurchaseById[]
 
-    const products = await db.select(
-        'products.id as id',
-        'products.name as name',
-        'products.price as price',
-        'products.description as description',
-        'products.image_url as imageUrl',
-        'purchases_products.quantity as quantity')
-        .from('products')
-        .join('purchases_products', 'purchases_products.product_id','products.id')
-        .where('purchase_id',id) as TProductsInPurchases[]
+    if(result){
+        const products = await db.select(
+            'products.id as id',
+            'products.name as name',
+            'products.price as price',
+            'products.description as description',
+            'products.image_url as imageUrl',
+            'purchases_products.quantity as quantity')
+            .from('products')
+            .join('purchases_products', 'purchases_products.product_id','products.id')
+            .where('purchase_id',id) as TProductsInPurchases[]
+    
+        result.products = products
+    }
 
-    result.products = products
+    
 
     return result
 }

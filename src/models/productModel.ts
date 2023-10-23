@@ -3,7 +3,13 @@ import { TProduct } from "../types";
 
 
 export const getAllProducts = async (): Promise<TProduct[]> => {
-    const [result] = await db("products")
+    const result = await db.select(
+        'id as id',
+        'name as name',
+        'price as price',
+        'description as description',
+        'image_url as imageUrl'
+    ).from('products').orderBy('id', 'asc')
     return result
 };
 
@@ -44,7 +50,7 @@ export const saveProduct = async (product: TProduct, id:string):Promise<void> =>
     name = '${product.name}',
     price = '${product.price}',
     description = '${product.description}',
-    imageUrl = '${product.imageUrl}'
+    image_url = '${product.imageUrl}'
     WHERE id = '${id}' `)
     
 }

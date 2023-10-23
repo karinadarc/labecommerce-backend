@@ -7,7 +7,7 @@ export const getProducts = async (req: Request, res: Response) => {
     const name: string = req.query.name as string
 
     if (name !== undefined && name.length < 1) {
-        return res.status(404).send('O campo de pesquisa deve possuir pelo menos um caractere')
+        return res.status(400).send({ message: 'O campo de pesquisa deve possuir pelo menos um caractere'})
     }
     if (!name) {
         const allProducts = await getAllProducts()
@@ -24,7 +24,7 @@ export const createProduct = async (req: Request, res: Response) => {
         const { id, name, price, description, imageUrl }: TProduct = req.body
         if (typeof id !== "string" || !id.startsWith('p00')) {
             res.statusCode = 404
-            throw new Error('O ID deve ser uma string e iniciar com "p00"')
+            throw new Error('O ID deve ser uma string e iniciar com p00')
 
         }
         if (await getProduct(id)) {
@@ -37,15 +37,15 @@ export const createProduct = async (req: Request, res: Response) => {
         }
         if (typeof price !== "number") {
             res.statusCode = 404
-            throw new Error('O preço precisa ser uma number')
+            throw new Error('O price precisa ter um valor numérico')
         }
         if (typeof description !== "string") {
             res.statusCode = 404
-            throw new Error('A descrição deve ser uma string')
+            throw new Error('A description deve ser uma string')
         }
         if (typeof imageUrl !== "string") {
             res.statusCode = 404
-            throw new Error('O link da imagem deve ser uma string')
+            throw new Error('O link da imageUrl deve ser uma string')
         }
         const newProduct: TProduct = {
             id,
@@ -55,11 +55,11 @@ export const createProduct = async (req: Request, res: Response) => {
             imageUrl
         }
         await addProduct(newProduct)
-        res.status(201).send('Produto cadastrado com sucesso')
+        res.status(201).send({message: 'Produto cadastrado com sucesso'})
     } catch (error) {
         //console.log(error)
         if (error instanceof Error) {
-            res.send(error.message)
+            res.send({message: error.message})
         }
     }
 
@@ -69,20 +69,20 @@ export const deleteProduct = async (req: Request, res: Response): Promise<any> =
     const id: string = req.params.id
 
     try {
-        if (await getPurchase(id)) {
+        if (await getProduct(id)) {
             await removeProduct(id)
 
             return res.status(200).send({ message: `O produto ${id} foi deletado.` })
         }
 
-        throw new Error(`O produto ${id} não existe!`)
+        return res.status(404).send({message:`O produto ${id} não existe!`})
 
     } catch (error) {
 
         if (error instanceof Error) {
-            res.send(error.message)
+            res.send({message: error.message})
         } else {
-            res.send('Erro inesperado!');
+            res.send({message:'Erro inesperado!'});
         }
     }
 };
@@ -99,7 +99,7 @@ export const updateProduct = async (req: Request, res: Response) => {
     const product = await getProduct(id)
 
     if (!product) {
-        return res.status(404).send({ message: "Produto não encontrado" });
+        return res.status(409).send({ message: "Produto não encontrado" });
     }
     if (newId !== undefined) {
         if (await getProduct(newId)) {
@@ -107,6 +107,27 @@ export const updateProduct = async (req: Request, res: Response) => {
         }
         product.id = newId;
     }
+   
+    if(newId !== undefined){
+        if (typeof newId !== "string" || !newId.startsWith('p00')) {
+            return res.status(409).send({ message:'O ID deve ser uma string e iniciar com p00' });
+        }
+    }
+
+    if (typeof newName !== "string") {
+        return res.status(409).send({ message: 'O name precisa ser uma string' });
+    }
+    if (typeof newPrice !== "number") {
+        return res.status(409).send({message:'O price precisa ter um valor numérico'});
+    }
+    if (typeof newDescription !== "string") {
+        return res.status(409).send({message:'A description deve ser uma string'});
+    }
+    if (typeof newImageURL !== "string") {
+        return res.status(409).send({message:'O link da imageUrl deve ser uma string'});
+       
+    }
+   
     if (newName !== undefined) {
         product.name = newName;
     }

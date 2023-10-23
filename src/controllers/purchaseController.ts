@@ -9,7 +9,7 @@ export const createPurchase = async (req: Request, res: Response): Promise<void>
     try {
         const id = req.body.id
         const buyer = req.body.buyer
-        let  total_price = 0
+        let total_price = 0
 
         const products = req.body.products
 
@@ -41,7 +41,7 @@ export const createPurchase = async (req: Request, res: Response): Promise<void>
 
                 if (typeof element.quantity !== 'number' || element.quantity <= 0) {
                     res.statusCode = 409
-                    throw new Error('A quantidade deve ser maior que zero!');
+                    throw new Error('O valor da quantidade deve ser numérico e ser maior do que zero');
                 }
 
                 total_price += product.price * element.quantity
@@ -60,14 +60,14 @@ export const createPurchase = async (req: Request, res: Response): Promise<void>
             total_price,
         }
         await addPurchase(purchase, newProducts);
-        res.status(201).send('Pedido realizado com sucesso')
+        res.status(201).send({ message: 'Pedido realizado com sucesso' })
 
 
     } catch (error) {
         if (error instanceof Error) {
-            res.send(error.message)
+            res.send({ message: error.message })
         } else {
-            res.send('Erro inesperado!');
+            res.send({ message: 'Erro inesperado!' });
         }
     }
 }
@@ -78,20 +78,20 @@ export const deletePurchase = async (req: Request, res: Response): Promise<any> 
     try {
         if (await getPurchase(id)) {
             await removePurchase(id)
-            
-            return res.status(200).send({ message:`O pedido ${id} foi cancelado com sucesso` }) 
-         }
-          throw new Error (`O pedido ${id} não existe!`)
-        
+
+            return res.status(200).send({ message: `O pedido ${id} foi cancelado com sucesso` })
+        }
+        return res.status(404).send({message: `O pedido ${id} não existe!`})
+
     } catch (error) {
         if (error instanceof Error) {
-            res.send(error.message)
+            res.send({ message: error.message })
         } else {
-            res.send('Erro inesperado!');
+            res.send({ message: 'Erro inesperado!' });
         }
     }
- 
-   
+
+
 };
 
 
@@ -100,18 +100,26 @@ export const getPurchaseById = async (req: Request, res: Response): Promise<void
         const id: string = req.params.id;
 
         if (typeof id !== "string" || !id.startsWith('pur00')) {
-            res.status(404).send('O ID deve ser uma string e iniciar com "pur00"');
+            res.status(409).send({ message: 'O ID deve ser uma string e iniciar com pur00' });
             return;
         }
 
         const result = await getCompletePurchase(id)
-        if( result){
+        if (result) {
             res.status(200).send(result)
             return
         }
+        res.statusCode = 409
+        throw new Error(`O ID ${id} não existe!`);
+
+
 
     } catch (error) {
-        res.status(500).send('Erro ao buscar a compra por ID');
+        if (error instanceof Error) {
+            res.send({ message: error.message })
+        } else {
+            res.send({ message: 'Erro inesperado!' });
+        }
     }
 }
-   
+
