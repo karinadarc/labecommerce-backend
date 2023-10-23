@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import { TProduct } from "../types";
 import { addProduct, getAllProducts, getProduct, getProductsbyName, removeProduct, saveProduct } from '../models/productModel';
-import { getPurchase } from '../models/purchaseModel';
+
 
 export const getProducts = async (req: Request, res: Response) => {
     const name: string = req.query.name as string

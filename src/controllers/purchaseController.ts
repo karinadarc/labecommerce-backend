@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import { addPurchase, getCompletePurchase, getPurchase, removePurchase } from '../models/purchaseModel'
 import { getUser } from '../models/userModel'
-import { TPurchase, TPurchaseById, TPurchases_products } from '../types'
+import { TPurchase, TPurchases_products } from '../types'
 import { getProduct } from '../models/productModel'
 
 
